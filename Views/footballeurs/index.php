@@ -1,31 +1,52 @@
 <?php require_once "../components/header.php" ?>
-<?php require_once "../../Api/footballeurs.php" ?>
 
-<?php
-    $footballeurs = getFootballeurs();
-?>
-<style>
-    #test{
-        background-image: url('../../Assets/src/background-index.jpg');
-        min-height: 650px;
-        max-width: 100%;
-        background-repeat: no-repeat;
-        background-position: center;
+<div class="container mx-auto my-5" id="test"></div>
+<div class="container mx-auto row" id="container">
+</div>
+
+<script>
+    const userAction = async () => {
+        const response = await fetch('../../Api/apiway.php?table=footballeurs&method=get');
+        const myJson = await response.json();
+        var records = myJson.records;
+
+        var container = document.getElementById("container");
+
+
+        records.forEach(function(item){
+            console.log(item);
+            
+            let div = document.createElement("div");
+            div.className = "col-sm-3";
+
+            let a = document.createElement("a");
+            a.href = "profil.php?ftb="+item.fields.Nom;
+
+            let img = document.createElement("img");
+            img.src = "../../Assets/src/"+item.fields.Link;
+            img.className = "card-img-top";
+            
+            a.appendChild(img);  
+            div.appendChild(a);  
+            container.appendChild(div);  
+
+        });
+
+        let div = document.createElement("div");
+        div.className = "col-sm-3 d-flex justify-content-center flex-column align-items-center";
+
+        let a = document.createElement("a");
+        a.className = "btn btn-secondary btn-outline";
+        a.href = "add.php";
+
+        let i = document.createElement("i");
+        i.className = "bi bi-plus-square";
+
+        a.appendChild(i);  
+        div.appendChild(a);  
+        container.appendChild(div);  
     }
-</style>
-<div class="container mx-auto" id="test">
-
-</div>
-<div class="container mt-3 mx-auto row">
-    <?php
-        foreach($footballeurs->{'records'} as $value){
-            ?>
-            <div class="col-sm-3">
-                <a href="profil.php?ftb=<?= $value->{'fields'}->{'Nom'}?>"><img src="../../Assets/src/<?= $value->{'fields'}->{'Link'}?>" class="card-img-top" alt="<?= $value->{'fields'}->{'Nom'}?>"></a>
-            </div>
-            <?php
-        }
-    ?>
-</div>
+    userAction();
+</script>
 
 <?php require_once "../components/footer.php" ?>

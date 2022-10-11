@@ -1,0 +1,29 @@
+/* profil */
+html{
+    height: 100%;
+}
+body{
+    color: rgb(209 205 199) !important;
+    background-color: rgb(24 26 27);
+    -webkit-tap-highlight-color: rgb(0 0 0 / 0%);
+}
+.bg-light{
+    background: rgb(0 0 0 / 21%) !important;
+}
+a{
+    color: rgb(233 233 233) !important;
+}
+
+.card-img-top{
+    max-width: 300px;
+    max-height: 400px;
+}
+
+/* index */
+#test{
+    background-image: url('../src/background-index.jpg');
+    min-height: 650px;
+    max-width: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
