@@ -8,42 +8,19 @@ class Footballeurs extends AdminModels {
     private $championnat;
     private $palmares;
 
-    public function __construct($idFootballeur = null) {
-        if($idFootballeur){
-            // $this->nom = $nom;
-            // $this->prenom = $prenom;
-            // $this->club = $club;
-            // $this->championnat = $championnat;
-            // $this->palmares = $palmares;
-        }
-    }
+    // public function __construct($idFootballeur = null) {
+    //     if($idFootballeur){
+    //         $this->nom = $nom;
+    //         $this->prenom = $prenom;
+    //         $this->club = $club;
+    //         $this->championnat = $championnat;
+    //         $this->palmares = $palmares;
+    //     }
+    // }
 
     function getFootballeursJSON($name = null)
     {
-        $curl = curl_init();
-        if($name){
-            curl_setopt($curl, CURLOPT_URL, "https://api.airtable.com/v0/appU8XVKTu0MyvbZY/footballeurs?filterByFormula=Nom%3D%22".$name."%22&view=view");
-        }else{
-            curl_setopt($curl, CURLOPT_URL, "https://api.airtable.com/v0/appU8XVKTu0MyvbZY/footballeurs?view=view");
-        }
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        $auth = "Authorization: Bearer keyCJAnKSTSgRGION";
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type: application/json' => $auth]);
-
-        $resultat = curl_exec($curl);
-        if ($resultat === (false || null)) {
-            throw new Exception(curl_error($curl), curl_errno($curl));
-        }
-        
-        $resultat = json_decode($resultat);
-        $resultat = json_encode($resultat);
-
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-
-        curl_close($curl);
-
-        return $resultat;
+        return $this->InitCurl('footballeurs', $name);
     }
 
     function getPictureName($name, $link){

@@ -24,7 +24,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../footballeurs/index.php">Footballeurs</a>
+                        <a class="nav-link active" aria-current="page" href="../footballeurs/index.php">Footballeurs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="../footballeurs/profil.php">Profils</a>
                     </li>
                 </ul>
                 </div>

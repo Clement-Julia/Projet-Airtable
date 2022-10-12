@@ -4,7 +4,7 @@
 
 <?php
     $Footballeurs = new Footballeurs();
-    $footballeurs = json_decode($Footballeurs->getFootballeursJSON($_GET["ftb"]));
+    $footballeurs = json_decode($Footballeurs->getFootballeursJSON((!empty($_GET["ftb"])) ? $_GET["ftb"] : null));
 ?>
 
 

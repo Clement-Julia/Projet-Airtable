@@ -7,7 +7,14 @@
 
 <?php
     $Footballeurs = new Footballeurs();
-    $footballeurs = json_decode($Footballeurs->getFootballeursJSON($_GET["ftb"]));
+    if(!empty($_GET["ftb"])){
+        $footballeurs = json_decode($Footballeurs->getFootballeursJSON($_GET["ftb"]));
+        if(count($footballeurs->{'records'}) == 0){
+            header('Location: profil.php');
+        }
+    }else{
+        header('Location: profil.php');
+    }
 
     $Club = new Club();
     $clubs = json_decode($Club->getClubsJSON());
@@ -100,22 +107,6 @@
 ?>
 
 <script>
-    // Form validation js
-    (() => {
-        'use strict'
-        const forms = document.querySelectorAll('.needs-validation')
-
-        Array.from(forms).forEach(form => {
-            form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
-            }
-
-            form.classList.add('was-validated')
-            }, false)
-        })
-    })();
 
     // CLub api
     // const Club = async () => {
