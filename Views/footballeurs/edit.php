@@ -157,6 +157,7 @@
 
         });
     }
+    userAction();
 
     function updateFootballeurs() {
         var link = upload(document.getElementById("Nom").value, file);
