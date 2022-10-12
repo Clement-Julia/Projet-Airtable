@@ -51,9 +51,13 @@ class Footballeurs extends AdminModels {
         $ext = substr($link["name"], strrpos($link["name"], '.'));
         $target_dir = "../Assets/src/";
         $target_file = $target_dir . $newName . $ext;
-        move_uploaded_file($link["tmp_name"], $target_file);
-        chmod($target_file, 0777);
-        $link = $newName.$ext;
+        if(in_array($ext, [".jpeg", ".png", ".jpg", ".svg"])){
+            move_uploaded_file($link["tmp_name"], $target_file);
+            chmod($target_file, 0777);
+            $link = $newName.$ext;
+        }else{
+            $link = "error";
+        }
 
         return json_encode($link);
     }

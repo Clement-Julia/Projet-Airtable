@@ -23,7 +23,7 @@
     </div>
     <div class="col-md-5 my-2">
         <label for="validationCustomPhoto" class="form-label">Photo</label>
-        <input type="file" name="Link" class="form-control" id="validationCustomPhoto" aria-label="file example">
+        <input type="file" name="Link" class="form-control" id="validationCustomPhoto" aria-label="file example" required>
         <div class="invalid-feedback">Choisissez une photo correcte</div>
     </div>
     <div class="col-md-5 my-2">
@@ -123,29 +123,41 @@
     Palmares();
 
     function addFootballeurs() {
-        var link = upload(document.getElementById("Nom").value, file);
-
-        var palmares = document.querySelectorAll('#palmaresID option:checked');
-        palmaresID = [];
-        palmares.forEach(item => {
-            if(item.value != ""){
-                palmaresID.push(item.value);
-            }
-        });
-
-        var data = {
-            'fields': {
-                'Nom': document.getElementById("Nom").value,
-                'Prenom': document.getElementById("Prenom").value,
-                'Link': link,
-                'clubID': [document.getElementById("clubID").value],
-                'championnatsID': [document.getElementById("champID").value],
-                'palmaresID': palmaresID
+        if(document.getElementById("Nom").value == (undefined || "") || document.getElementById("Prenom").value == (undefined || "")){
+            alert("Le footballeur doit avoir au minimum : un nom, un prénom et une image");
+        }else{
+            var file = document.querySelector('#validationCustomPhoto').files[0];
+            if(file != undefined){
+                var link = upload(document.getElementById("Nom").value, file);
+                if(link != undefined || link != "error"){
+                    var palmares = document.querySelectorAll('#palmaresID option:checked');
+                    palmaresID = [];
+                    palmares.forEach(item => {
+                        if(item.value != ""){
+                            palmaresID.push(item.value);
+                        }
+                    });
+            
+                    var data = {
+                        'fields': {
+                            'Nom': document.getElementById("Nom").value,
+                            'Prenom': document.getElementById("Prenom").value,
+                            'Link': link,
+                            'clubID': [document.getElementById("clubID").value],
+                            'championnatsID': [document.getElementById("champID").value],
+                            'palmaresID': palmaresID
+                        }
+                    }
+            
+                    getApi(data, 'POST');
+                    location.assign("profil.php?ftb="+document.getElementById("Nom").value);
+                }else{
+                    alert("Le format est incorrect");
+                }
+            }else{
+                alert("Une image est obligatoire");
             }
         }
-
-        getApi(data, 'POST');
-        location.assign("profil.php?ftb="+document.getElementById("Nom").value);
     }
 </script>
 

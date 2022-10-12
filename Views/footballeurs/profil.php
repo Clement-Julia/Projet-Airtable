@@ -50,9 +50,23 @@
 <script>
     window.onload=function() {
         const userAction = async () => {
-            const response = await fetch('../../Api/apiway.php?table=footballeurs&method=get&name=<?= $_GET['ftb'] ?>');
+            <?php
+                if(!empty($_GET['ftb'])){
+                    ?>
+                        const response = await fetch('../../Api/apiway.php?table=footballeurs&method=get&name=<?= $_GET['ftb'] ?>');
+                    <?php
+                }else{
+                    ?>
+                        location.assign("index.php");
+                    <?php
+                }
+            ?>
             const myJson = await response.json();
             var records = myJson.records;
+            if(records.length == 0){
+                alert("Votre joueur n'existe pas");
+                location.assign("index.php");
+            }
 
             records.forEach(function(item){
                 console.log(item);
