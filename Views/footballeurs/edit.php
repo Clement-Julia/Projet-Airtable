@@ -31,19 +31,19 @@
     <div class="col-md-5 my-2">
         <label for="clubID" class="form-label">Club</label>
         <select class="form-select" id="clubID" name="Club[]">
-        <option selected disabled value="">Choisissez un club...</option>
+        <option disabled value="">Choisissez un club...</option>
         </select>
     </div>
     <div class="col-md-5 my-2">
         <label for="champID" class="form-label">Championnat</label>
         <select class="form-select" id="champID" name="Championnat[]">
-        <option selected disabled value="">Choisissez un championnat...</option>
+        <option disabled value="">Choisissez un championnat...</option>
         </select>
     </div>
     <div class="col-md-5 my-2">
         <label for="palmaresID" class="form-label">Palmarès</label>
         <select class="form-select" id="palmaresID" name="Palmares[]" multiple>
-        <option selected disabled value="">Sélectionner des trophées...</option>
+        <option disabled value="">Sélectionner des trophées...</option>
         </select>
     </div>
     <div class="col-md-3 my-2 d-flex justify-content-center btn-group">
@@ -145,15 +145,16 @@
             document.getElementById("clubID").value = item.fields.clubID[0] ;
             document.getElementById("champID").value = item.fields.championnatsID[0] ;
 
-            // var palmares = item.fields.Palmares;
-            // palmares.forEach(function(element){
-            //     if(element == palmares[palmares.length-1]){
-            //         document.getElementById("Palmares").innerHTML += element;
-            //     }else{
-            //         document.getElementById("Palmares").innerHTML += element+", " ;
-            //     }
-
-            // });
+            var select = document.getElementById('palmaresID');
+            var palmares = item.fields.palmaresID;
+            for (var i = 0; i < select.options.length; i++) {
+                if(select.options[i].value != ""){
+                    if(palmares.includes(select.options[i].value)){
+                        select.options[i].checked = true;
+                        select.options[i].selected = palmares.indexOf(select.options[i].value) >= 0;
+                    }
+                }
+            }
 
         });
     }
