@@ -1,4 +1,23 @@
 <?php require_once "../components/header.php" ?>
+<?php require_once "../../Models/AdminModels.php" ?>
+<?php require_once "../../Models/Footballeurs.php" ?>
+<?php require_once "../../Models/Club.php" ?>
+<?php require_once "../../Models/Championnat.php" ?>
+<?php require_once "../../Models/Palmares.php" ?>
+
+<?php
+    $Footballeurs = new Footballeurs();
+    $footballeurs = json_decode($Footballeurs->getFootballeursJSON());
+
+    $Club = new Club();
+    $clubs = json_decode($Club->getClubsJSON());
+
+    $Championnat = new Championnat();
+    $championnats = json_decode($Championnat->getChampionnatsJSON());
+
+    $Palmares = new Palmares();
+    $palmares = json_decode($Palmares->getPalmaresJSON());
+?>
 
 <div class="container row my-3 mx-auto text-left d-flex flex-column align-items-center">
     <div class="col-md-5 my-2">
@@ -29,18 +48,39 @@
     <div class="col-md-5 my-2">
         <label for="clubID" class="form-label">Club</label>
         <select class="form-select" id="clubID" name="Club[]">
-        <option selected disabled value="">Choisissez un club...</option>
+            <option selected disabled value="">Choisissez un club...</option>
+            <?php
+                foreach($clubs->{'records'} as $club){
+                    ?>
+                        <option value="<?= $club->{'id'} ?>"><?= $club->{'fields'}->{'Nom'} ?></option>
+                    <?php
+                }
+            ?>
         </select>
     </div>
     <div class="col-md-5 my-2">
         <label for="champID" class="form-label">Championnat</label>
         <select class="form-select" id="champID" name="Championnat[]">
-        <option selected disabled value="">Choisissez un championnat...</option>
+            <option selected disabled value="">Choisissez un championnat...</option>
+            <?php
+                foreach($championnats->{'records'} as $championnats){
+                    ?>
+                        <option value="<?= $championnats->{'id'} ?>"><?= $championnats->{'fields'}->{'Nom'} ?></option>
+                    <?php
+                }
+            ?>
         </select>
     </div>
-    <div class="col-md-5 my-2">
+    <div class="col-md-5 row my-2 me-0">
         <label for="palmaresID" class="form-label">Palmarès</label>
-        <select class="form-select" id="palmaresID" name="Palmares[]" multiple>
+        <select class="selectpicker col-12" id="palmaresID" name="Palmares[]" multiple>
+            <?php
+                foreach($palmares->{'records'} as $palmares){
+                    ?>
+                        <option value="<?= $palmares->{'id'} ?>"><?= $palmares->{'fields'}->{'Nom'} ?></option>
+                    <?php
+                }
+            ?>
         </select>
     </div>
     <div class="col-md-5 my-2 d-flex justify-content-center">
@@ -67,60 +107,60 @@
     })();
 
     // CLub api
-    const Club = async () => {
-        const response = await fetch('../../Api/apiway.php?table=club&method=get');
-        const myJson = await response.json();
-        var records = myJson.records;
+    // const Club = async () => {
+    //     const response = await fetch('../../Api/apiway.php?table=club&method=get');
+    //     const myJson = await response.json();
+    //     var records = myJson.records;
 
-        var select = document.getElementById("clubID");
+    //     var select = document.getElementById("clubID");
 
-        records.forEach(function(item){
-            let opt = document.createElement("option");
-            opt.value = item.id;
-            opt.innerHTML = item.fields.Nom;
+    //     records.forEach(function(item){
+    //         let opt = document.createElement("option");
+    //         opt.value = item.id;
+    //         opt.innerHTML = item.fields.Nom;
             
-            select.appendChild(opt);
+    //         select.appendChild(opt);
 
-        });
-    }
-    Club();
+    //     });
+    // }
+    // Club();
 
     // Championnat api
-    const champ = async () => {
-        const response = await fetch('../../Api/apiway.php?table=championnats&method=get');
-        const myJson = await response.json();
-        var records = myJson.records;
+    // const champ = async () => {
+    //     const response = await fetch('../../Api/apiway.php?table=championnats&method=get');
+    //     const myJson = await response.json();
+    //     var records = myJson.records;
 
-        var select = document.getElementById("champID");
+    //     var select = document.getElementById("champID");
 
-        records.forEach(function(item){
-            let opt = document.createElement("option");
-            opt.value = item.id;
-            opt.innerHTML = item.fields.Nom;
+    //     records.forEach(function(item){
+    //         let opt = document.createElement("option");
+    //         opt.value = item.id;
+    //         opt.innerHTML = item.fields.Nom;
             
-            select.appendChild(opt);
+    //         select.appendChild(opt);
 
-        });
-    }
-    champ();
+    //     });
+    // }
+    // champ();
 
     // Palmares api
-    const Palmares = async () => {
-        const response = await fetch('../../Api/apiway.php?table=palmares&method=get');
-        const myJson = await response.json();
-        var records = myJson.records;
+    // const Palmares = async () => {
+    //     const response = await fetch('../../Api/apiway.php?table=palmares&method=get');
+    //     const myJson = await response.json();
+    //     var records = myJson.records;
 
-        var select = document.getElementById("palmaresID");
+    //     var select = document.getElementById("palmaresID");
 
-        records.forEach(function(item){
-            let opt = document.createElement("option");
-            opt.value = item.id;
-            opt.innerHTML = item.fields.Nom;
+    //     records.forEach(function(item){
+    //         let opt = document.createElement("option");
+    //         opt.value = item.id;
+    //         opt.innerHTML = item.fields.Nom;
             
-            select.appendChild(opt);
-        }); 
-    }
-    Palmares();
+    //         select.appendChild(opt);
+    //     }); 
+    // }
+    // Palmares();
 
     function addFootballeurs() {
         if(document.getElementById("Nom").value == (undefined || "") || document.getElementById("Prenom").value == (undefined || "")){

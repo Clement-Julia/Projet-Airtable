@@ -10,7 +10,7 @@ body{
 .bg-light{
     background: rgb(0 0 0 / 21%) !important;
 }
-a{
+nav a{
     color: rgb(233 233 233) !important;
 }
 
