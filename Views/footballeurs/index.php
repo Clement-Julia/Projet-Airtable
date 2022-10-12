@@ -21,6 +21,7 @@
 
             let a = document.createElement("a");
             a.href = "profil.php?ftb="+item.fields.Nom;
+            a.title = item.fields.Nom ;
 
             let img = document.createElement("img");
             img.src = "../../Assets/src/"+item.fields.Link;
@@ -36,10 +37,12 @@
         div.className = "col-sm-3 d-flex justify-content-center flex-column align-items-center";
 
         let a = document.createElement("a");
-        a.className = "btn btn-secondary btn-outline";
+        a.id = "btn-i";
+        a.className = "btn";
         a.href = "add.php";
 
         let i = document.createElement("i");
+        i.id = "add-i";
         i.className = "bi bi-plus-square";
 
         a.appendChild(i);  

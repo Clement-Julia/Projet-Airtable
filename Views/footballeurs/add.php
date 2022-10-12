@@ -1,10 +1,9 @@
 <?php require_once "../components/header.php" ?>
 
-<div class="container my-3">
-    <form class="row g-3 needs-validation" method="post" action="../../Api/apiway.php?table=footballeurs&method=add" enctype="multipart/form-data" novalidate>
-    <div class="col-md-4">
-        <label for="validationCustom01" class="form-label">Nom</label>
-        <input type="text" class="form-control" id="validationCustom01" name="Nom" required>
+<div class="container row my-3 mx-auto text-left d-flex flex-column align-items-center">
+    <div class="col-md-5 my-2">
+        <label for="Nom" class="form-label">Nom</label>
+        <input type="text" class="form-control" id="Nom" name="Nom" required>
         <div class="valid-feedback">
             Ok!
         </div>
@@ -12,9 +11,9 @@
             Veuillez renseignez ce champ
         </div>
     </div>
-    <div class="col-md-4">
-        <label for="validationCustom02" class="form-label">Prénom</label>
-        <input type="text" class="form-control" id="validationCustom02" name="Prenom" required>
+    <div class="col-md-5 my-2">
+        <label for="Prenom" class="form-label">Prénom</label>
+        <input type="text" class="form-control" id="Prenom" name="Prenom" required>
         <div class="valid-feedback">
             Ok!
         </div>
@@ -22,33 +21,31 @@
             Veuillez renseignez ce champ
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-5 my-2">
         <label for="validationCustomPhoto" class="form-label">Photo</label>
-        <input type="file" name="Link" class="form-control" id="validationCustomPhoto" aria-label="file example" required>
+        <input type="file" name="Link" class="form-control" id="validationCustomPhoto" aria-label="file example">
         <div class="invalid-feedback">Choisissez une photo correcte</div>
     </div>
-    <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">Club</label>
+    <div class="col-md-5 my-2">
+        <label for="clubID" class="form-label">Club</label>
         <select class="form-select" id="clubID" name="Club[]">
         <option selected disabled value="">Choisissez un club...</option>
         </select>
     </div>
-    <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">Championnat</label>
+    <div class="col-md-5 my-2">
+        <label for="champID" class="form-label">Championnat</label>
         <select class="form-select" id="champID" name="Championnat[]">
         <option selected disabled value="">Choisissez un championnat...</option>
         </select>
     </div>
-    <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">Palmarès</label>
+    <div class="col-md-5 my-2">
+        <label for="palmaresID" class="form-label">Palmarès</label>
         <select class="form-select" id="palmaresID" name="Palmares[]" multiple>
-        <option selected disabled value="">Sélectionner des trophées...</option>
         </select>
     </div>
-    <div class="col-12">
-        <button class="btn btn-primary" type="submit">Ajouter</button>
+    <div class="col-md-5 my-2 d-flex justify-content-center">
+        <button class="btn btn-primary" type="submit" onclick="addFootballeurs()">Ajouter</button>
     </div>
-    </form>
 </div>
 
 <script>
@@ -124,6 +121,32 @@
         }); 
     }
     Palmares();
+
+    function addFootballeurs() {
+        var link = upload(document.getElementById("Nom").value, file);
+
+        var palmares = document.querySelectorAll('#palmaresID option:checked');
+        palmaresID = [];
+        palmares.forEach(item => {
+            if(item.value != ""){
+                palmaresID.push(item.value);
+            }
+        });
+
+        var data = {
+            'fields': {
+                'Nom': document.getElementById("Nom").value,
+                'Prenom': document.getElementById("Prenom").value,
+                'Link': link,
+                'clubID': [document.getElementById("clubID").value],
+                'championnatsID': [document.getElementById("champID").value],
+                'palmaresID': palmaresID
+            }
+        }
+
+        getApi(data, 'POST');
+        location.assign("profil.php?ftb="+document.getElementById("Nom").value);
+    }
 </script>
 
 <?php require_once "../components/footer.php" ?>

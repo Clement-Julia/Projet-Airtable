@@ -11,7 +11,7 @@
 
 <div class="container mt-3 row align-items-center" style="max-width:100%;">
     <div class="col-md-12 d-flex justify-content-end">
-        <a href="edit.php?ftb=Messi"><i class="bi bi-pencil-square fa-xs"></i></a>
+        <a id="edit" href="" title=""><i class="bi bi-pencil-square fa-xs"></i></a>
     </div>
     <div class="col-4">
         <img id="picture" src="" class="card-img-top" alt="">
@@ -59,6 +59,8 @@
 
                 document.getElementById("picture").src = "../../Assets/src/"+item.fields.Link ;
                 document.getElementById("picture").alt = item.fields.Nom ;
+                
+                document.getElementById("edit").href = "edit.php?ftb="+item.fields.Nom ;
 
                 document.getElementById("Nom").innerHTML = item.fields.Nom ;
                 document.getElementById("Prenom").innerHTML = item.fields.Prenom ;

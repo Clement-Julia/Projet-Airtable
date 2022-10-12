@@ -19,6 +19,18 @@ a{
     max-height: 400px;
 }
 
+#add-i{
+    font-size: 40px;
+}
+
+#add-i:focus-visible{
+    outline: transparent;
+}
+
+#btn-i, #btn-i:active{
+    border: none;
+}
+
 /* index */
 #test{
     background-image: url('../src/background-index.jpg');
