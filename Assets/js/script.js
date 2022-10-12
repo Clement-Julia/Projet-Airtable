@@ -24,7 +24,6 @@ function getApi(data = null, method, url = null){
         header.body = JSON.stringify(data)
     }
 
-
     fetch(URL, header).then((response) => {
         if(response.ok){
             response.json().then((data) => {
@@ -58,3 +57,9 @@ const upload = async (name, file) => {
         console.log(error.message);
     }
 };
+
+$('.selectpicker').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+    if (e.target.options[clickedIndex].selected) {
+        console.log(e.target.options[clickedIndex].value);
+    }
+});
