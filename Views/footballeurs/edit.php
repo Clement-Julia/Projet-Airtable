@@ -25,7 +25,7 @@
     </div>
     <div class="col-md-5 my-2">
         <label for="validationCustomPhoto" class="form-label">Photo</label>
-        <input type="file" name="Link" class="form-control" id="validationCustomPhoto" aria-label="file example">
+        <input type="file" name="Link" class="form-control" id="validationCustomPhoto" aria-label="file example" accept="image/*" required>
         <div class="invalid-feedback">Choisissez une photo correcte</div>
     </div>
     <div class="col-md-5 my-2">
@@ -129,9 +129,24 @@
 
     
     const userAction = async () => {
-        const response = await fetch('../../Api/apiway.php?table=footballeurs&method=get&name=<?= $_GET['ftb'] ?>');
+        <?php
+            if(!empty($_GET['ftb'])){
+                ?>
+                    const response = await fetch('../../Api/apiway.php?table=footballeurs&method=get&name=<?= $_GET['ftb'] ?>');
+                <?php
+            }else{
+                ?>
+                    location.assign("index.php");
+                <?php
+            }
+        ?>
         const myJson = await response.json();
         var records = myJson.records;
+        if(records.length == 0){
+            alert("Votre joueur n'existe pas");
+            location.assign("index.php");
+        }
+
 
         records.forEach(function(item){
             document.getElementById("id").value = item.id ;
@@ -161,31 +176,42 @@
     userAction();
 
     function updateFootballeurs() {
-        var link = upload(document.getElementById("Nom").value, file);
-
-        var palmares = document.querySelectorAll('#palmaresID option:checked');
-        palmaresID = [];
-        palmares.forEach(item => {
-            if(item.value != ""){
-                palmaresID.push(item.value);
-            }
-        });
-
-        var data = {
-            'id': document.getElementById('id').value,
-            'fields': {
-                'Nom': document.getElementById("Nom").value,
-                'Prenom': document.getElementById("Prenom").value,
-                'Link': link,
-                'clubID': [document.getElementById("clubID").value],
-                'championnatsID': [document.getElementById("champID").value],
-                'palmaresID': palmaresID
+        if(document.getElementById("Nom").value == (undefined || "") || document.getElementById("Prenom").value == (undefined || "")){
+            alert("Le footballeur doit avoir au minimum : un nom, un prénom et une image");
+        }else{
+            var file = document.querySelector('#validationCustomPhoto').files[0];
+            if(file != undefined){
+                var link = upload(document.getElementById("Nom").value, file);
+                if(link != undefined || link != "error"){
+                    var palmares = document.querySelectorAll('#palmaresID option:checked');
+                    palmaresID = [];
+                    palmares.forEach(item => {
+                        if(item.value != ""){
+                            palmaresID.push(item.value);
+                        }
+                    });
+            
+                    var data = {
+                        'id': document.getElementById('id').value,
+                        'fields': {
+                            'Nom': document.getElementById("Nom").value,
+                            'Prenom': document.getElementById("Prenom").value,
+                            'Link': link,
+                            'clubID': [document.getElementById("clubID").value],
+                            'championnatsID': [document.getElementById("champID").value],
+                            'palmaresID': palmaresID
+                        }
+                    }
+            
+                    getApi(data, 'PATCH');
+                    location.assign("profil.php?ftb="+document.getElementById("Nom").value);
+                }else{
+                    alert("Le format est incorrect");
+                }
+            }else{
+                alert("Une image est obligatoire");
             }
         }
-
-        getApi(data, 'PATCH');
-        
-        location.assign("profil.php?ftb="+document.getElementById("Nom").value);
     }
 
     function deleteFootballeurs() {
