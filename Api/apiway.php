@@ -1,18 +1,19 @@
 <?php
-require_once("../Models/AdminModels.php");
+require_once "../Models/AdminModels.php";
+require_once("../Controllers/ControleurFootballeurs.php");
 
 try{
     if(!empty($_GET['table'])){
         $url = explode("/", filter_var($_GET['table'],FILTER_SANITIZE_URL));
         switch($url[0]){
             case "footballeurs" :
-                $Footballeurs = new Footballeurs();
+                $Footballeurs = new ControleurFootballeurs();
                 switch($_GET["method"]){
                     case "get":
                         if(isset($_GET["name"])){
-                            print_r($Footballeurs->getFootballeursJSON(ucfirst($_GET["name"])));
+                            print_r($Footballeurs->getFootballeurs(ucfirst($_GET["name"])));
                         }else{
-                            print_r($Footballeurs->getFootballeursJSON());
+                            print_r($Footballeurs->getFootballeurs());
                         }
                         break;
                     case "add":
@@ -45,10 +46,10 @@ try{
                 }
                 break;
             case "club" :
-                $Club = new Club();
+                $Club = new ControleurClub();
                 switch($_GET["method"]){
                     case "get":
-                        print_r($Club->getClubsJSON());
+                        print_r($Club->getClub());
                         break;
                     case "add":
                         //method
@@ -60,7 +61,7 @@ try{
                 }
                 break;
             case "pays":
-                $Pays = new Pays();
+                $Pays = new ControleurPays();
                 switch($_GET["method"]){
                     case "get":
                         $Pays->getPays();
@@ -105,7 +106,7 @@ try{
                 }
                 break;
             case "image":
-                $Footballeurs = new Footballeurs();
+                $Footballeurs = new ControleurFootballeurs();
                 print_r($Footballeurs->getPictureName($_POST["Name"], $_FILES["Link"]));
                 break;
             default : throw new Exception ("La demande n'est pas valide, vérifiez l'url");

@@ -32,8 +32,6 @@
 
 
         records.forEach(function(item){
-            console.log(item);
-            
             let div = document.createElement("div");
             div.className = "col-sm-3";
 

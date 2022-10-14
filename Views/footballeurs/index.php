@@ -1,10 +1,10 @@
 <?php require_once "../components/header.php" ?>
-<?php require_once "../../Models/AdminModels.php" ?>
-<?php require_once "../../Models/Footballeurs.php" ?>
+<?php require_once "../../Models/AdminModels.php"; ?>
+<?php require_once "../../Controllers/ControleurFootballeurs.php" ?>
 
 <?php
-    $Footballeurs = new Footballeurs();
-    $footballeurs = json_decode($Footballeurs->getFootballeursJSON());
+    $Footballeurs = new ControleurFootballeurs();
+    $footballeurs = $Footballeurs->getFootballeurs();
 ?>
 
 <div class="container mx-auto my-5" id="test"></div>
@@ -73,6 +73,19 @@
     //     container.appendChild(div);  
     // }
     // userAction();
+</script>
+
+<script>
+    window.addEventListener('load', function () {
+        if(localStorage.getItem('delete') != undefined){
+            if(localStorage.getItem('delete') == "ok"){
+                toastr.success('Le footballeur a bien été supprimé');
+            }else if(localStorage.getItem('delete') == "error"){
+                toastr.danger("Un problème est survenu lors de la suppression");
+            }
+        }
+        localStorage.clear();
+    })
 </script>
 
 <?php require_once "../components/footer.php" ?>

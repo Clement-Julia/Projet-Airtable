@@ -1,4 +1,4 @@
-function getApi(data = null, method, url = null){
+async function getApi(data = null, method, url = null){
     const API_KEY = "keyCJAnKSTSgRGION";
     
     let URL = `https://api.airtable.com/v0/appU8XVKTu0MyvbZY/footballeurs?api_key=${API_KEY}`;
@@ -23,43 +23,48 @@ function getApi(data = null, method, url = null){
     if(method != "DELETE"){
         header.body = JSON.stringify(data)
     }
-
-    fetch(URL, header).then((response) => {
+    
+    let result = await fetch(URL, header).then((response) => {
+        console.log(response)
         if(response.ok){
             response.json().then((data) => {
-                console.log(data);
+                return "ok";
             });
-            console.log(response);
+            return "ok";
         }else{
-            console.log(response);
+            return "error";
         }
     }).catch((e) => {
-        console.log(e);
+        return "error";
     });
+    return result;
+
 }
 
 const upload = async (name, file) => {
-    // const file = document.getElementById("validationCustomPhoto").files[0];
-
     formData = new FormData();
     formData.append("Name", name);
     formData.append("Link", file);
+    var result = [];
     
     try {
         let response = await fetch('../../Api/apiway.php?table=image', {
             method: 'POST',
             body: formData,
         });
-        const result = await response.json();
+        result["success"] = true;
+        result["data"] = await response.json();
 
         return result;
     } catch (error) {
-        console.log(error.message);
+        result["success"] = false;
+        result["message"] = error.message;
     }
+    return result;
 };
 
 $('.selectpicker').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
     if (e.target.options[clickedIndex].selected) {
-        console.log(e.target.options[clickedIndex].value);
+        // console.log(e.target.options[clickedIndex].value);
     }
 });

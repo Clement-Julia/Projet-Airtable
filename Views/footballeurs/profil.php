@@ -1,10 +1,10 @@
 <?php require_once "../components/header.php" ?>
-<?php require_once "../../Models/AdminModels.php" ?>
-<?php require_once "../../Models/Footballeurs.php" ?>
+<?php require_once "../../Models/AdminModels.php"; ?>
+<?php require_once "../../Controllers/ControleurFootballeurs.php" ?>
 
 <?php
-    $Footballeurs = new Footballeurs();
-    $footballeurs = json_decode($Footballeurs->getFootballeursJSON((!empty($_GET["ftb"])) ? $_GET["ftb"] : null));
+    $Footballeurs = new ControleurFootballeurs();
+    $footballeurs = $Footballeurs->getFootballeurs((!empty($_GET["ftb"])) ? $_GET["ftb"] : null);
 ?>
 
 
@@ -54,12 +54,14 @@
                         <td>Palmarès</td>
                         <td id="Palmares">
                             <?php
-                                $lastElement = end($footballeur->{'fields'}->{'Palmares'});
-                                foreach($footballeur->{'fields'}->{'Palmares'} as $palmares){
-                                    if($palmares == $lastElement){
-                                        echo $palmares;
-                                    }else{
-                                        echo $palmares.", ";
+                                if(isset($footballeur->{'fields'}->{'Palmares'})){
+                                    $lastElement = end($footballeur->{'fields'}->{'Palmares'});
+                                    foreach($footballeur->{'fields'}->{'Palmares'} as $palmares){
+                                        if($palmares == $lastElement){
+                                            echo $palmares;
+                                        }else{
+                                            echo $palmares.", ";
+                                        }
                                     }
                                 }
                             ?>
@@ -107,6 +109,27 @@
     //     }
     //     userAction();
     // }
+</script>
+
+<script>
+    window.addEventListener('load', function () {
+        if(localStorage.getItem('add') != undefined){
+            if(localStorage.getItem('add') == "ok"){
+                toastr.success('Le footballeur a bien été créé');
+            }else if(localStorage.getItem('add') == "error"){
+                toastr.danger("Un problème est survenu lors de l'ajout");
+            }
+        }
+
+        if(localStorage.getItem('edit') != undefined){
+            if(localStorage.getItem('edit') == "ok"){
+                toastr.success('Le footballeur a bien été modifié');
+            }else if(localStorage.getItem('edit') == "error"){
+                toastr.danger("Un problème est survenu lors de l'édition");
+            }
+        }
+        localStorage.clear();
+    })
 </script>
 
 <?php require_once "../components/footer.php" ?>

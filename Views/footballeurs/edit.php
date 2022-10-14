@@ -1,14 +1,14 @@
 <?php require_once "../components/header.php" ?>
-<?php require_once "../../Models/AdminModels.php" ?>
-<?php require_once "../../Models/Footballeurs.php" ?>
-<?php require_once "../../Models/Club.php" ?>
-<?php require_once "../../Models/Championnat.php" ?>
-<?php require_once "../../Models/Palmares.php" ?>
+<?php require_once "../../Models/AdminModels.php"; ?>
+<?php require_once "../../Controllers/ControleurFootballeurs.php" ?>
+<?php require_once "../../Controllers/ControleurClub.php" ?>
+<?php require_once "../../Controllers/ControleurChampionnat.php" ?>
+<?php require_once "../../Controllers/ControleurPalmares.php" ?>
 
 <?php
-    $Footballeurs = new Footballeurs();
+    $Footballeurs = new ControleurFootballeurs();
     if(!empty($_GET["ftb"])){
-        $footballeurs = json_decode($Footballeurs->getFootballeursJSON($_GET["ftb"]));
+        $footballeurs = $Footballeurs->getFootballeurs($_GET["ftb"]);
         if(count($footballeurs->{'records'}) == 0){
             header('Location: profil.php');
         }
@@ -16,14 +16,14 @@
         header('Location: profil.php');
     }
 
-    $Club = new Club();
-    $clubs = json_decode($Club->getClubsJSON());
+    $Club = new ControleurClub();
+    $clubs = $Club->getClub();
 
-    $Championnat = new Championnat();
-    $championnats = json_decode($Championnat->getChampionnatsJSON());
+    $Championnat = new ControleurChampionnat();
+    $championnats = $Championnat->getChampionnats();
 
-    $Palmares = new Palmares();
-    $palmares = json_decode($Palmares->getPalmaresJSON());
+    $Palmares = new ControleurPalmares();
+    $palmares = $Palmares->getPalmares();
 ?>
 
 <?php
@@ -31,7 +31,7 @@
         ?>
             <div class="container row my-3 mx-auto text-left d-flex flex-column align-items-center">
                 <!-- <form class="row g-3 needs-validation" method="post" action="../../Api/apiway.php?table=footballeurs&method=update" enctype="multipart/form-data" novalidate> -->
-                <input type="hidden" value="" name="id" id="id">
+                <input type="hidden" value="<?=$footballeur->{'id'}?>" name="id" id="id">
                 <div class="col-md-5 my-2">
                     <label for="Nom" class="form-label">Nom</label>
                     <input type="text" class="form-control" id="Nom" name="Nom" value="<?=$footballeur->{'fields'}->{'Nom'}?>" required>
@@ -197,14 +197,14 @@
     // }
     // userAction();
 
-    function updateFootballeurs() {
+    async function updateFootballeurs() {
         if(document.getElementById("Nom").value == (undefined || "") || document.getElementById("Prenom").value == (undefined || "")){
-            alert("Le footballeur doit avoir au minimum : un nom, un prénom et une image");
+            alert("Le footballeur doit avoir au minimum : un nom, un prénom");
         }else{
             var file = document.querySelector('#validationCustomPhoto').files[0];
             if(file != undefined){
-                var link = upload(document.getElementById("Nom").value, file);
-                if(link != undefined || link != "error"){
+                var link = await upload(document.getElementById("Nom").value, file);
+                if(link["data"] != undefined || link["data"] != "error" || link["success"] != true ){
                     var palmares = document.querySelectorAll('#palmaresID option:checked');
                     palmaresID = [];
                     palmares.forEach(item => {
@@ -218,29 +218,55 @@
                         'fields': {
                             'Nom': document.getElementById("Nom").value,
                             'Prenom': document.getElementById("Prenom").value,
-                            'Link': link,
+                            'Link': link["data"],
                             'clubID': [document.getElementById("clubID").value],
                             'championnatsID': [document.getElementById("champID").value],
                             'palmaresID': palmaresID
                         }
                     }
             
-                    getApi(data, 'PATCH');
+                    result = await getApi(data, 'PATCH');
+                    localStorage.setItem('edit', result);
                     location.assign("profil.php?ftb="+document.getElementById("Nom").value);
                 }else{
-                    alert("Le format est incorrect");
+                    if(link["message"] != "" ){
+                        alert(link["message"]);
+                    }else{
+                        alert("Le format est incorrect");
+                    }
                 }
             }else{
-                alert("Une image est obligatoire");
-            }
+                var palmares = document.querySelectorAll('#palmaresID option:checked');
+                palmaresID = [];
+                palmares.forEach(item => {
+                    if(item.value != ""){
+                        palmaresID.push(item.value);
+                    }
+                });
+        
+                var data = {
+                    'id': document.getElementById('id').value,
+                    'fields': {
+                        'Nom': document.getElementById("Nom").value,
+                        'Prenom': document.getElementById("Prenom").value,
+                        'clubID': [document.getElementById("clubID").value],
+                        'championnatsID': [document.getElementById("champID").value],
+                        'palmaresID': palmaresID
+                    }
+                }
+        
+                result = await getApi(data, 'PATCH');
+                localStorage.setItem('edit', result);
+                location.assign("profil.php?ftb="+document.getElementById("Nom").value);
+        }
         }
     }
 
-    function deleteFootballeurs() {
+    async function deleteFootballeurs() {
         var ID = document.getElementById('id').value;
         var URL = `https://api.airtable.com/v0/appU8XVKTu0MyvbZY/footballeurs/${ID}`
-        getApi(null, 'DELETE', URL);
-
+        result = await getApi(null, 'DELETE', URL);
+        localStorage.setItem('delete', result);
         location.assign("index.php");
     }
 </script>

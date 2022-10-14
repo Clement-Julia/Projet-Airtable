@@ -1,22 +1,18 @@
 <?php require_once "../components/header.php" ?>
-<?php require_once "../../Models/AdminModels.php" ?>
-<?php require_once "../../Models/Footballeurs.php" ?>
-<?php require_once "../../Models/Club.php" ?>
-<?php require_once "../../Models/Championnat.php" ?>
-<?php require_once "../../Models/Palmares.php" ?>
+<?php require_once "../../Models/AdminModels.php"; ?>
+<?php require_once "../../Controllers/ControleurClub.php" ?>
+<?php require_once "../../Controllers/ControleurChampionnat.php" ?>
+<?php require_once "../../Controllers/ControleurPalmares.php" ?>
 
 <?php
-    $Footballeurs = new Footballeurs();
-    $footballeurs = json_decode($Footballeurs->getFootballeursJSON());
+    $Club = new ControleurClub();
+    $clubs = $Club->getClub();
 
-    $Club = new Club();
-    $clubs = json_decode($Club->getClubsJSON());
+    $Championnat = new ControleurChampionnat();
+    $championnats = $Championnat->getChampionnats();
 
-    $Championnat = new Championnat();
-    $championnats = json_decode($Championnat->getChampionnatsJSON());
-
-    $Palmares = new Palmares();
-    $palmares = json_decode($Palmares->getPalmaresJSON());
+    $Palmares = new ControleurPalmares();
+    $palmares = $Palmares->getPalmares();
 ?>
 
 <div class="container row my-3 mx-auto text-left d-flex flex-column align-items-center">
@@ -162,14 +158,14 @@
     // }
     // Palmares();
 
-    function addFootballeurs() {
+    async function addFootballeurs() {
         if(document.getElementById("Nom").value == (undefined || "") || document.getElementById("Prenom").value == (undefined || "")){
             alert("Le footballeur doit avoir au minimum : un nom, un prénom et une image");
         }else{
             var file = document.querySelector('#validationCustomPhoto').files[0];
             if(file != undefined){
-                var link = upload(document.getElementById("Nom").value, file);
-                if(link != undefined || link != "error"){
+                var link = await upload(document.getElementById("Nom").value, file);
+                if(link["data"] != undefined || link["data"] != "error" || link["success"] != true ){
                     var palmares = document.querySelectorAll('#palmaresID option:checked');
                     palmaresID = [];
                     palmares.forEach(item => {
@@ -177,22 +173,27 @@
                             palmaresID.push(item.value);
                         }
                     });
-            
+
                     var data = {
                         'fields': {
                             'Nom': document.getElementById("Nom").value,
                             'Prenom': document.getElementById("Prenom").value,
-                            'Link': link,
+                            'Link': link["data"],
                             'clubID': [document.getElementById("clubID").value],
                             'championnatsID': [document.getElementById("champID").value],
                             'palmaresID': palmaresID
                         }
                     }
             
-                    getApi(data, 'POST');
+                    result = await getApi(data, 'POST');
+                    localStorage.setItem('add', result);
                     location.assign("profil.php?ftb="+document.getElementById("Nom").value);
                 }else{
-                    alert("Le format est incorrect");
+                    if(link["message"] != "" ){
+                        alert(link["message"]);
+                    }else{
+                        alert("Le format est incorrect");
+                    }
                 }
             }else{
                 alert("Une image est obligatoire");
